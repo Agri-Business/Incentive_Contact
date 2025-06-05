@@ -12,7 +12,8 @@ def get_salesman_by_contact():
     if not contact:
         return jsonify({'error': 'Missing required parameter: contact'}), 400
 
-    record = data[data['Contacts'].astype(str) == str(contact)]
+    # Search using 'Contact' column
+    record = data[data['Contact'].astype(str) == str(contact)]
 
     if record.empty:
         return jsonify({'error': 'Contact not found'}), 404
@@ -23,7 +24,7 @@ def get_salesman_by_contact():
         return cast_type(value) if pd.notnull(value) else None
 
     response = {
-        'Contact': str(row['Contacts']),
+        'Contact': str(row['Contact']),
         'Salesman Code': str(row['Salesman Code']),
         'Listed_Outlets': safe_cast(row['Listed_Outlets'], int),
         'New_Outlet_Addition_Tgt': safe_cast(row['New_Outlet_Addition_Tgt'], int),
