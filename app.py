@@ -30,8 +30,8 @@ def get_user_data():
             for col in df.columns
         }
 
-        response_text = "\\n".join([f"{key}: {value}" for key, value in output.items()])
-return response_text
+        response_text = "\n".join([f"{key}: {value}" for key, value in output.items()])
+        return response_text
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
