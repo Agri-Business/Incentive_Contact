@@ -22,7 +22,7 @@ def get_user_data():
 
         row = result.iloc[0]
 
-        output = {col: row[col] for col in [
+        output = {col: (row[col].item() if hasattr(row[col], 'item') else row[col]) for col in [
             'Listed_Outlets', 'New_Outlet_Addition_Tgt', 'Mandays', 'Gate_Way_ECO_30', 'ECO_MTD', 'BTD_ECO_30',
             'Oil_Tgt_', 'Oil_Vol(MT)', 'Oil_Ach', 'Oil_Ach_Slab', 'Oil_Amount', 'Oil_Next_Slab',
             'BTD_Oil_Next_Slab', 'BTD_Oil_Next_Slab_Amount', 'BTD_Oil_Vol_Max_Slab', 'BTD_Oil_Vol_Max_Amount',
