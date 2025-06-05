@@ -27,16 +27,7 @@ def get_user_data():
                 row[col].item() if hasattr(row[col], 'item')
                 else (None if pd.isna(row[col]) else row[col])
             )
-            for col in [
-                'Listed_Outlets', 'New_Outlet_Addition_Tgt', 'Mandays', 'Gate_Way_ECO_30', 'ECO_MTD', 'BTD_ECO_30',
-                'Oil_Tgt_', 'Oil_Vol(MT)', 'Oil_Ach', 'Oil_Ach_Slab', 'Oil_Amount', 'Oil_Next_Slab',
-                'BTD_Oil_Next_Slab', 'BTD_Oil_Next_Slab_Amount', 'BTD_Oil_Vol_Max_Slab', 'BTD_Oil_Vol_Max_Amount',
-                'Food_Tgt_', 'Food_Vol(MT)', 'Food_Ach', 'Food_Ach_Slab', 'Food_Amount', 'Food_Next_Slab',
-                'BTD_Food_Next_Slab_Amount', 'BTD_Food_Next_Slab', 'BTD_Food_Vol', 'BTD_Food_Vol_Max_Amount',
-                'Total_Tgt', 'Total_Vol(MT)', 'Total_Ach', 'Perfect_Store_MTD', 'Perfect_Store_Amount',
-                'Super_Charge_Tgt', 'Super_Charge_Ach', 'Super_Charge_Ach_Per', 'Super_Charge_Ach_Slab',
-                'Super_Charge_Amount', 'Super_charge_Next_Slab'
-            ]
+            for col in df.columns
         }
 
         return jsonify(output)
