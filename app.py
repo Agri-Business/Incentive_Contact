@@ -20,6 +20,7 @@ def get_salesman_by_contact():
         return cast_type(value) if pd.notnull(value) else None
 
     response = {
+        'Salesman Name': safe_cast(row['Salesman Name'], str),
         'HO-DSM Type': safe_cast(row['HO-DSM Type'], str),
         'Listed Outlet': safe_cast(row['Listed Outlet'], str),
         'New_Outlet_Addition_Tgt': safe_cast(row['New_Outlet_Addition_Tgt'], str),
