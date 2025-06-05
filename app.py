@@ -10,9 +10,9 @@ def get_salesman_by_contact():
     if not contact:
         return jsonify({'error': 'Missing required parameter: contact'}), 400
 
-    record = data[data['Contact'].astype(str) == str(contact)]
+    record = data[data['contact'].astype(str) == str(contact)]
     if record.empty:
-        return jsonify({'error': 'Contact not found'}), 404
+        return jsonify({'error': 'contact not found'}), 404
 
     row = record.iloc[0]
 
