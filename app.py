@@ -1,40 +1,71 @@
 from flask import Flask, request, jsonify
 import pandas as pd
-import os
 
 app = Flask(__name__)
 
-df = pd.read_csv("DSM_Incentive.csv")
-df.columns = df.columns.str.strip()
+# Load data when the app starts
+data = pd.read_csv("DSM_Incentive.csv")
 
-@app.route('/get_user_data', methods=['GET'])
-def get_user_data():
-    contact = request.args.get('Contact')
-
+@app.route('/salesman', methods=['GET'])
+def get_salesman_by_contact():
+    contact = request.args.get('contact')
     if not contact:
-        return jsonify({'error': 'Contact parameter is required'}), 400
+        return jsonify({'error': 'Missing required parameter: contact'}), 400
 
-    try:
-        result = df[df['Contact'].astype(str) == str(contact)]
+    record = data[data['Contacts'].astype(str) == str(contact)]
 
-        if result.empty:
-            return jsonify({'message': 'No data found for this contact'}), 404
+    if record.empty:
+        return jsonify({'error': 'Contact not found'}), 404
 
-        row = result.iloc[0]
+    row = record.iloc[0]
 
-        output = {
-            col: (
-                row[col].item() if hasattr(row[col], 'item')
-                else (None if pd.isna(row[col]) else row[col])
-            )
-            for col in df.columns
-        }
+    def safe_cast(value, cast_type):
+        return cast_type(value) if pd.notnull(value) else None
 
-        response_text = "\n".join([f"{key}: {value}" for key, value in output.items()])
-        return response_text
+    response = {
+        'Contact': str(row['Contacts']),
+        'Salesman Code': str(row['Salesman Code']),
+        'Listed_Outlets': safe_cast(row['Listed_Outlets'], int),
+        'New_Outlet_Addition_Tgt': safe_cast(row['New_Outlet_Addition_Tgt'], int),
+        'Mandays': safe_cast(row['Mandays'], int),
+        'Gate_Way_ECO_30': safe_cast(row['Gate_Way_ECO_30'], str),
+        'ECO_MTD': safe_cast(row['ECO_MTD'], str),
+        'BTD_ECO_30': safe_cast(row['BTD_ECO_30'], int),
+        'Oil_Tgt_': safe_cast(row['Oil_Tgt_'], int),
+        'Oil_Vol(MT)': safe_cast(row['Oil_Vol(MT)'], str),
+        'Oil_Ach': safe_cast(row['Oil_Ach'], str),
+        'Oil_Ach_Slab': safe_cast(row['Oil_Ach_Slab'], str),
+        'Oil_Amount': safe_cast(row['Oil_Amount'], int),
+        'Oil_Next_Slab': safe_cast(row['Oil_Next_Slab'], str),
+        'BTD_Oil_Next_Slab': safe_cast(row['BTD_Oil_Next_Slab'], int),
+        'BTD_Oil_Next_Slab_Amount': safe_cast(row['BTD_Oil_Next_Slab_Amount'], int),
+        'BTD_Oil_Vol_Max_Slab': safe_cast(row['BTD_Oil_Vol_Max_Slab'], int),
+        'BTD_Oil_Vol_Max_Amount': safe_cast(row['BTD_Oil_Vol_Max_Amount'], int),
+        'Food_Tgt_': safe_cast(row['Food_Tgt_'], int),
+        'Food_Vol(MT)': safe_cast(row['Food_Vol(MT)'], str),
+        'Food_Ach': safe_cast(row['Food_Ach'], str),
+        'Food_Ach_Slab': safe_cast(row['Food_Ach_Slab'], str),
+        'Food_Amount': safe_cast(row['Food_Amount'], int),
+        'Food_Next_Slab': safe_cast(row['Food_Next_Slab'], str),
+        'BTD_Food_Next_Slab_Amount': safe_cast(row['BTD_Food_Next_Slab_Amount'], int),
+        'BTD_Food_Next_Slab': safe_cast(row['BTD_Food_Next_Slab'], int),
+        'BTD_Food_Vol': safe_cast(row['BTD_Food_Vol'], int),
+        'BTD_Food_Vol_Max_Amount': safe_cast(row['BTD_Food_Vol_Max_Amount'], int),
+        'Total_Tgt': safe_cast(row['Total_Tgt'], int),
+        'Total_Vol(MT)': safe_cast(row['Total_Vol(MT)'], str),
+        'Total_Ach': safe_cast(row['Total_Ach'], str),
+        'Perfect_Store_MTD': safe_cast(row['Perfect_Store_MTD'], str),
+        'Perfect_Store_Amount': safe_cast(row['Perfect_Store_Amount'], int),
+        'Super_Charge_Tgt': safe_cast(row['Super_Charge_Tgt'], int),
+        'Super_Charge_Ach': safe_cast(row['Super_Charge_Ach'], str),
+        'Super_Charge_Ach_Per': safe_cast(row['Super_Charge_Ach_Per'], str),
+        'Super_Charge_Ach_Slab': safe_cast(row['Super_Charge_Ach_Slab'], str),
+        'Super_Charge_Amount': safe_cast(row['Super_Charge_Amount'], int),
+        'Super_charge_Next_Slab': safe_cast(row['Super_charge_Next_Slab'], str),
+        'BTD_Super_Charge_Next_Slab': safe_cast(row['BTD_Super_Charge_Next_Slab'], int)
+    }
 
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    return jsonify(response)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+    app.run(host='0.0.0.0', port=5000)
