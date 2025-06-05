@@ -2,8 +2,6 @@ from flask import Flask, request, jsonify
 import pandas as pd
 
 app = Flask(__name__)
-
-# Load data when the app starts
 data = pd.read_csv("DSM_Incentive.csv")
 
 @app.route('/salesman', methods=['GET'])
@@ -12,9 +10,7 @@ def get_salesman_by_contact():
     if not contact:
         return jsonify({'error': 'Missing required parameter: contact'}), 400
 
-    # Search using 'Contact' column
     record = data[data['Contact'].astype(str) == str(contact)]
-
     if record.empty:
         return jsonify({'error': 'Contact not found'}), 404
 
@@ -24,46 +20,44 @@ def get_salesman_by_contact():
         return cast_type(value) if pd.notnull(value) else None
 
     response = {
-        'Contact': str(row['Contact']),
-        'Salesman Code': str(row['Salesman Code']),
-        'Listed_Outlets': safe_cast(row['Listed_Outlets'], int),
-        'New_Outlet_Addition_Tgt': safe_cast(row['New_Outlet_Addition_Tgt'], int),
-        'Mandays': safe_cast(row['Mandays'], int),
-        'Gate_Way_ECO_30': safe_cast(row['Gate_Way_ECO_30'], str),
+        'HO-DSM Type': safe_cast(row['HO-DSM Type'], str),
+        'Listed Outlet': safe_cast(row['Listed Outlet'], str),
+        'New_Outlet_Addition_Tgt': safe_cast(row['New_Outlet_Addition_Tgt'], str),
+        'ECO Target': safe_cast(row['ECO Target'], str),
         'ECO_MTD': safe_cast(row['ECO_MTD'], str),
-        'BTD_ECO_30': safe_cast(row['BTD_ECO_30'], int),
-        'Oil_Tgt_': safe_cast(row['Oil_Tgt_'], int),
-        'Oil_Vol(MT)': safe_cast(row['Oil_Vol(MT)'], str),
-        'Oil_Ach': safe_cast(row['Oil_Ach'], str),
-        'Oil_Ach_Slab': safe_cast(row['Oil_Ach_Slab'], str),
-        'Oil_Amount': safe_cast(row['Oil_Amount'], int),
-        'Oil_Next_Slab': safe_cast(row['Oil_Next_Slab'], str),
-        'BTD_Oil_Next_Slab': safe_cast(row['BTD_Oil_Next_Slab'], int),
-        'BTD_Oil_Next_Slab_Amount': safe_cast(row['BTD_Oil_Next_Slab_Amount'], int),
-        'BTD_Oil_Vol_Max_Slab': safe_cast(row['BTD_Oil_Vol_Max_Slab'], int),
-        'BTD_Oil_Vol_Max_Amount': safe_cast(row['BTD_Oil_Vol_Max_Amount'], int),
-        'Food_Tgt_': safe_cast(row['Food_Tgt_'], int),
-        'Food_Vol(MT)': safe_cast(row['Food_Vol(MT)'], str),
-        'Food_Ach': safe_cast(row['Food_Ach'], str),
-        'Food_Ach_Slab': safe_cast(row['Food_Ach_Slab'], str),
-        'Food_Amount': safe_cast(row['Food_Amount'], int),
-        'Food_Next_Slab': safe_cast(row['Food_Next_Slab'], str),
-        'BTD_Food_Next_Slab_Amount': safe_cast(row['BTD_Food_Next_Slab_Amount'], int),
-        'BTD_Food_Next_Slab': safe_cast(row['BTD_Food_Next_Slab'], int),
-        'BTD_Food_Vol': safe_cast(row['BTD_Food_Vol'], int),
-        'BTD_Food_Vol_Max_Amount': safe_cast(row['BTD_Food_Vol_Max_Amount'], int),
-        'Total_Tgt': safe_cast(row['Total_Tgt'], int),
-        'Total_Vol(MT)': safe_cast(row['Total_Vol(MT)'], str),
-        'Total_Ach': safe_cast(row['Total_Ach'], str),
-        'Perfect_Store_MTD': safe_cast(row['Perfect_Store_MTD'], str),
-        'Perfect_Store_Amount': safe_cast(row['Perfect_Store_Amount'], int),
-        'Super_Charge_Tgt': safe_cast(row['Super_Charge_Tgt'], int),
+        'ECO_BTD': safe_cast(row['ECO_BTD'], str),
+        'Oil_Tgt': safe_cast(row['Oil_Tgt'], str),
+        'Oil_Vol_MT': safe_cast(row['Oil_Vol_MT'], str),
+        'Oil_Ach_Per': safe_cast(row['Oil_Ach_Per'], str),
+        'Oil_Ach_Per_Slab': safe_cast(row['Oil_Ach_Per_Slab'], str),
+        'Oil_Ach_Amount': safe_cast(row['Oil_Ach_Amount'], str),
+        'Oil_Vol_BTD': safe_cast(row['Oil_Vol_BTD'], str),
+        'Food_Tgt': safe_cast(row['Food_Tgt'], str),
+        'Food_Vol_MT': safe_cast(row['Food_Vol_MT'], str),
+        'Food_Ach_Per': safe_cast(row['Food_Ach_Per'], str),
+        'Food_Ach_Per_Slab': safe_cast(row['Food_Ach_Per_Slab'], str),
+        'Food_Ach_Amount': safe_cast(row['Food_Ach_Amount'], str),
+        'Food_Vol_BTD': safe_cast(row['Food_Vol_BTD'], str),
+        'Total_Vol_MT': safe_cast(row['Total_Vol_MT'], str),
+        'Perfect_Store': safe_cast(row['Perfect_Store'], str),
+        'Perfect_Store_Amount': safe_cast(row['Perfect_Store_Amount'], str),
+        'Perfect_Store_Criteria': safe_cast(row['Perfect_Store_Criteria'], str),
+        'Super_Charge_Product': safe_cast(row['Super_Charge_Product'], str),
+        'Super_Charge_Product_PDO': safe_cast(row['Super_Charge_Product_PDO'], str),
+        'Super_Charge_No_of_Product': safe_cast(row['Super_Charge_No_of_Product'], str),
+        'Super_Charge_Tgt': safe_cast(row['Super_Charge_Tgt'], str),
         'Super_Charge_Ach': safe_cast(row['Super_Charge_Ach'], str),
         'Super_Charge_Ach_Per': safe_cast(row['Super_Charge_Ach_Per'], str),
-        'Super_Charge_Ach_Slab': safe_cast(row['Super_Charge_Ach_Slab'], str),
-        'Super_Charge_Amount': safe_cast(row['Super_Charge_Amount'], int),
-        'Super_charge_Next_Slab': safe_cast(row['Super_charge_Next_Slab'], str),
-        'BTD_Super_Charge_Next_Slab': safe_cast(row['BTD_Super_Charge_Next_Slab'], int)
+        'Super_Charge_Ach_Per_Slab': safe_cast(row['Super_Charge_Ach_Per_Slab'], str),
+        'Super_Charge_Ach_Amount': safe_cast(row['Super_Charge_Ach_Amount'], str),
+        'Super_Charge_BTD': safe_cast(row['Super_Charge_BTD'], str),
+        'Manday': safe_cast(row['Manday'], str),
+        'ASE Name': safe_cast(row['ASE Name'], str),
+        'ASE Emp Code': safe_cast(row['ASE Emp Code'], str),
+        'ASM Name': safe_cast(row['ASM Name'], str),
+        'ASM Emp Code': safe_cast(row['ASM Emp Code'], str),
+        'RSM Name': safe_cast(row['RSM Name'], str),
+        'RSM Emp Code': safe_cast(row['RSM Emp Code'], str)
     }
 
     return jsonify(response)
